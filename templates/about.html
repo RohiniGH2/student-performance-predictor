@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+:root {
+  --cream: #f7f3ee;
+  --forest: #2e5e4e;
+  --leaf: #4e944f;
+  --goldenrod: #e6a700;
+  --orange: #f89c1c;
+  --deep-green: #1b3a2b;
+  --white: #fff;
+  --shadow: #1a1a2e;
+  --gray: #6b6b6b;
+}
+body {
+  background: var(--cream);
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  color: var(--deep-green);
+  margin: 0;
+  padding: 0;
+}
+.about-hero-banner {
+  width: 100vw;
+  min-height: 340px;
+  background: url('https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=1500&q=80') center center/cover no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.about-hero-banner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(120deg, rgba(46,94,78,0.7) 0%, rgba(248,156,28,0.45) 100%);
+  z-index: 1;
+}
+.about-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: var(--white);
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3.5rem 1rem 2.5rem 1rem;
+}
+.about-hero-content h2 {
+  font-size: 1.1rem;
+  color: var(--orange);
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin-bottom: 0.7rem;
+}
+.about-hero-content h1 {
+  font-size: 3.2rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  line-height: 1.1;
+  text-shadow: 0 2px 24px rgba(30,30,30,0.18);
+}
+@media (max-width: 700px) {
+  .about-hero-content h1 { font-size: 2rem; }
+}
+
+.about-main-section {
+  background: var(--cream);
+  border-radius: 0 0 2.5rem 2.5rem;
+  margin-top: -2.5rem;
+  padding: 3.5rem 1.5rem 2.5rem 1.5rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 8px 32px 0 rgba(46,94,78,0.07);
+  position: relative;
+  z-index: 3;
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem 3.5rem;
+  margin-bottom: 2.5rem;
+}
+@media (max-width: 900px) {
+  .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+.about-block {
+  background: var(--white);
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 16px rgba(46,94,78,0.07);
+  padding: 2.2rem 2rem 2rem 2rem;
+  position: relative;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.about-block h4 {
+  color: var(--orange);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.7rem;
+  text-transform: uppercase;
+}
+.about-block h2 {
+  color: var(--forest);
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 1.1rem;
+  line-height: 1.2;
+}
+.about-block h3 {
+  color: var(--forest);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.about-block p {
+  color: var(--gray);
+  font-size: 1.08rem;
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+.about-block .highlight {
+  color: var(--leaf);
+  font-weight: 700;
+  font-size: 1.13rem;
+}
+.about-block .sub {
+  color: var(--forest);
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+/* Decorative star */
+.about-star {
+  color: var(--orange);
+  font-size: 3.5rem;
+  margin: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Section divider */
+.about-divider {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--orange), var(--leaf), var(--goldenrod));
+  margin: 2.5rem 0 2.5rem 0;
+  border-radius: 2px;
+}
+</style>
+
+<!-- HERO BANNER -->
+<div class="about-hero-banner">
+  <div class="about-hero-content">
+    <h2>ABOUT ACADIVINE</h2>
+    <h1>Empowering<br>Student Success</h1>
+  </div>
+</div>
+
+<!-- MAIN SECTION -->
+<div class="about-main-section">
+  <div class="about-grid">
+    <div class="about-block">
+      <h4>WHAT WE STAND FOR</h4>
+      <h2>We are dedicated to<br>unlocking every student's potential.</h2>
+    </div>
+    <div class="about-block">
+      <h3 class="highlight">Transforming Academic Journeys</h3>
+      <p>Acadivine believes every learner deserves personalized support and actionable insights. We use advanced analytics to help students and educators make smarter, data-driven decisions for a brighter future.</p>
+    </div>
+    <div class="about-block">
+      <h4>OUR MISSION</h4>
+      <h3 class="highlight">Empower, Predict, and Guide</h3>
+      <p>Our mission is to provide students with AI-powered performance predictions, tailored recommendations, and continuous guidance—helping them set, track, and achieve their academic goals with confidence.</p>
+    </div>
+    <div class="about-block">
+      <h4>OUR VISION</h4>
+      <h3 class="highlight">A World Where Every Student Thrives</h3>
+      <p>We envision a future where every student has access to the tools and insights needed to excel, overcome challenges, and celebrate their growth—supported by innovative technology and a caring community.</p>
+    </div>
+  </div>
+  <div class="about-divider"></div>
+</div>
+
+{% endblock %}

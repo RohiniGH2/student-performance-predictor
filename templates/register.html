@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(120deg, #0B0C10 0%, #1F2833 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.main-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 80px 20px;
+}
+.register-container {
+  background: #1F2833;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(102,252,241,0.1);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  border: 1.5px solid #45A29E;
+}
+.register-title {
+  color: #66FCF1;
+  font-size: 2rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: 1px;
+}
+.form-group {
+  margin-bottom: 1.5rem;
+}
+.form-label {
+  color: #C5C6C7;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.form-control {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 2px solid #45A29E;
+  background: #0B0C10;
+  color: #66FCF1;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+.form-control:focus {
+  outline: none;
+  border-color: #66FCF1;
+  box-shadow: 0 0 0 3px rgba(102,252,241,0.1);
+}
+.btn-register {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(90deg, #66FCF1 0%, #45A29E 100%);
+  color: #0B0C10;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn-register:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102,252,241,0.2);
+}
+.login-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #C5C6C7;
+}
+.login-link a {
+  color: #66FCF1;
+  text-decoration: none;
+  font-weight: 600;
+}
+.login-link a:hover {
+  text-decoration: underline;
+}
+.alert {
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+.alert-danger {
+  background: rgba(255,99,132,0.1);
+  border: 1px solid #ff6384;
+  color: #ff6384;
+}
+.alert-success {
+  background: rgba(102,252,241,0.1);
+  border: 1px solid #66FCF1;
+  color: #66FCF1;
+}
+
+.password-requirements {
+  color: #C5C6C7;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: rgba(102,252,241,0.05);
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .navbar {
+    padding: 1rem;
+  }
+  
+  .nav-menu {
+    gap: 1rem;
+  }
+}
+</style>
+
+
+
+<div class="main-content">
+    <div class="register-container">
+        <h1 class="register-title">Create Account</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('register') }}" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control" required 
+                       minlength="3" maxlength="20" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-control" required 
+                       placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control" 
+                       required minlength="8" placeholder="Create a password">
+                <div class="password-requirements">
+                    Password must be at least 8 characters long
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" 
+                       class="form-control" required placeholder="Confirm your password">
+            </div>
+            <button type="submit" class="btn-register">Create Account</button>
+        </form>
+        
+        <div class="login-link">
+            Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+        </div>
+    </div>
+</div>
+
+<script>
+function validateForm() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    
+    if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return false;
+    }
+    
+    if (password.length < 8) {
+        alert('Password must be at least 8 characters long!');
+        return false;
+    }
+    
+    return true;
+}
+</script>
+{% endblock %}

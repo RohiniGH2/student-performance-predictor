@@ -1,0 +1,545 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+:root {
+    --dark-bg: #0B0C10;
+    --panel-bg: #1F2833;
+    --text-light: #C5C6C7;
+    --accent: #66FCF1;
+    --accent-dark: #45A29E;
+    --white: #ffffff;
+}
+
+/* Base Styles */
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    font-family: 'Segoe UI', 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Hero Section */
+.hero-section {
+    min-height: 100vh;
+    background: url('{{ url_for('static', filename='studhero.jpg') }}') center center / cover no-repeat;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.hero-section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: rgba(11, 12, 16, 0.4); /* Overlay */
+    z-index: 0;
+}
+.hero-section .container {
+    position: relative;
+    z-index: 1;
+}
+.hero-section h1 {
+    font-size: 4rem;
+    color: var(--accent);
+    font-weight: 900;
+    margin-bottom: 1rem;
+}
+.hero-section p.lead {
+    font-size: 1.2rem;
+    color: var(--text-light);
+    max-width: 600px;
+    margin: auto;
+    margin-bottom: 2rem;
+}
+.hero-section .btn {
+    background-color: transparent;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+    padding: 0.8em 2em;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s ease-in-out;
+}
+.hero-section .btn:hover {
+    background-color: var(--accent);
+    color: var(--dark-bg);
+}
+
+/* Stats Section */
+.stats-section {
+    background-color: var(--panel-bg);
+    padding: 3rem 2rem 1.5rem 2rem; /* Reduced top padding */
+    text-align: center;
+    margin-bottom: 0;
+}
+.stats-section h2 {
+    color: var(--accent);
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: auto;
+}
+.stat-card {
+    background-color: var(--dark-bg);
+    padding: 2.2rem;
+    border-radius: 1.2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s;
+}
+.stat-card:hover {
+    transform: translateY(-8px);
+    background-color: var(--accent-dark);
+    color: var(--white);
+}
+.stat-icon {
+    font-size: 2.5rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+}
+.stat-label {
+    font-size: 1rem;
+    color: var(--text-light);
+}
+
+@media (max-width: 992px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 576px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Features Section */
+.features-section {
+  background: linear-gradient(120deg, #0B0C10, #1F2833);
+  padding: 3rem 0;
+  color: #C5C6C7;
+}
+
+.section-title {
+  color: #66FCF1;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.feature-card {
+  background-color: #1F2833;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.feature-card .card-img-top {
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
+  border-bottom: 3px solid #66FCF1;
+  border-top-left-radius: 1.2rem;
+  border-top-right-radius: 1.2rem;
+}
+
+.feature-card .card-title {
+  color: #66FCF1;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+}
+
+.feature-card .card-text {
+  color: #C5C6C7;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 767px) {
+  .feature-card .card-img-top {
+    height: 160px;
+  }
+}
+
+.news-section {
+  background-color: #0B0C10;
+  padding: 5rem 0;
+}
+
+
+
+.news-card {
+  background-color: #1F2833;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.news-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+
+.news-card .card-img-top {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 3px solid #66FCF1;
+}
+
+.news-card .card-body {
+  padding: 1.5rem;
+}
+
+.news-card .card-title {
+  color: #66FCF1;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.news-card .card-text {
+  color: #C5C6C7;
+  font-size: 0.96rem;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.btn-readmore {
+  background-color: #66FCF1;
+  color: #0B0C10;
+  padding: 0.5rem 1.3rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.btn-readmore:hover {
+  background-color: #45A29E;
+}
+
+
+.testimonials-section {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.testimonials-section h2 {
+  font-size: 36px;
+  color: #66FCF1;
+  margin-bottom: 50px;
+}
+
+.testimonial-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.testimonial-card {
+  background-color: #1F2833;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(69, 162, 158, 0.3);
+  padding: 25px;
+  width: 380px;
+  text-align: left;
+  transition: box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  box-shadow: 0 0 20px rgba(69, 162, 158, 0.6);
+}
+
+.testimonial-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.testimonial-header img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 15px;
+  object-fit: cover;
+  border: 2px solid #66FCF1;
+}
+
+.testimonial-header .info h4 {
+  color: #66FCF1;
+  margin: 0;
+  font-size: 18px;
+}
+
+.testimonial-header .info small {
+  color: #45A29E;
+  font-size: 14px;
+}
+
+.testimonial-card p {
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .testimonial-card {
+    width: 90%;
+  }
+
+  .testimonial-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .testimonial-header img {
+    margin-bottom: 10px;
+  }
+}
+
+.testimonial-card:active {
+  animation: bumpUp 150ms ease-out;
+}
+
+@keyframes bumpUp {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.testimonial-card {
+  background-color: #1F2833;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(69, 162, 158, 0.3);
+  padding: 25px;
+  width: 380px;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+
+
+
+</style>
+
+<!-- Hero Section -->
+<header class="hero-section">
+  <div class="container">
+    <h1>Student Performance Predictor</h1>
+    <p class="lead">Empowering your academic journey with AI-driven insights</p>
+    <a href="{{ url_for('predict') }}" class="btn">Get Started</a>
+  </div>
+</header>
+
+<!-- Stats Section -->
+<section class="stats-section">
+  <h2>Our Impact</h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-value">98.7%</div>
+      <div class="stat-label">Prediction Accuracy</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🌍</div>
+      <div class="stat-value">150+</div>
+      <div class="stat-label">Countries Reached</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">☁️</div>
+      <div class="stat-value">1.2M+</div>
+      <div class="stat-label">Records Processed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">❤️</div>
+      <div class="stat-value">99.9%</div>
+      <div class="stat-label">User Satisfaction</div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Key Features</h2>
+    <div class="row g-4 justify-content-center">
+      
+      <div class="col-md-3">
+        <div class="card feature-card">
+          <img src="https://www.zs.com/content/dam/images/stock/Hands-ipad-illuminated.jpg" class="card-img-top" alt="Insight Image">
+          <div class="card-body">
+            <h5 class="card-title">Personalized Insights</h5>
+            <p class="card-text">Analyze student performance data to generate tailored academic improvement plans.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card feature-card">
+          <img src="{{ url_for('static', filename='predictions.jpg') }}" class="card-img-top" alt="ML Image">
+          <div class="card-body">
+            <h5 class="card-title">AI-Driven Predictions</h5>
+            <p class="card-text">Leverage machine learning models to forecast academic outcomes with high accuracy.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card feature-card">
+          <img src="{{ url_for('static', filename='guidance.jpg') }}" class="card-img-top" alt="Dashboard Image">
+          <div class="card-body">
+            <h5 class="card-title">Actionable Guidance</h5>
+            <p class="card-text">Turn AI-driven predictions into meaningful progress with personalized, tailored, step-by-step academic guidance </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card feature-card">
+          <img src="https://d1.awsstatic.com/onedam/marketing-channels/website/aws/en_US/product-categories/security-identity-compliance/compliance/approved/images/bc7ee318-671f-4ba9-98a3-76932c8b2f02.070021c9f674f8a2390b6a3f5bb0372da08c4f1e.png" class="card-img-top" alt="Privacy Image">
+          <div class="card-body">
+            <h5 class="card-title">Privacy First</h5>
+            <p class="card-text">All student data is encrypted, ensuring full compliance with data protection standards.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Latest News & Academic Insights Section -->
+<section class="news-section py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-5">Latest News & Academic Insights</h2>
+    <div class="row g-4 justify-content-center">
+      
+      <!-- Card 1: Burnout Detection -->
+      <div class="col-md-4">
+        <div class="news-card">
+          <img src="{{ url_for('static', filename='burnout.jpg') }}" alt="AI Detects Burnout" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title"> Flags Student Burnouts Before Grades Drop</h5>
+            <p class="card-text">Student Performance Predictor now includes burnout detection, identifying early signs of emotional fatigue through behavior and performance patterns—helping schools intervene before it's too late.</p>
+            <a href="https://www.mdpi.com/2227-9709/12/2/51" class="btn btn-readmore">READ MORE</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Cognitive Consequences -->
+      <div class="col-md-4">
+        <div class="news-card">
+          <img src="https://imageio.forbes.com/specials-images/imageserve/675dfe0d2dbf3118cff6d752/AI-poses-both-threats-and-possibilities--when-it-comes-to-cognitive-skills-/0x0.jpg?format=jpg&crop=1942,1093,x0,y1,safe&width=960" alt="AI Cognitive Effects" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Is AI Hindering Student Thinking Skills?</h5>
+            <p class="card-text">New research warns that heavy reliance on AI tools for academic help may reduce students’ critical thinking, highlighting the need for balance in AI-assisted learning. There are progressive declines students' cognitive skills.</p>
+            <a href="https://www.civilsdaily.com/news/is-artificial-intelligence-affecting-critical-thinking-skills/" class="btn btn-readmore">READ MORE</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Privacy Tailored -->
+      <div class="col-md-4">
+        <div class="news-card">
+          <img src="https://media.licdn.com/dms/image/v2/D5612AQG2o-58Db3eLw/article-cover_image-shrink_720_1280/B56ZWy_knrGUAI-/0/1742464771529?e=2147483647&v=beta&t=nBTpNAfWRC5t85IQnFIX2zoKnK2x4Np1iJePvwajt3o" alt="Privacy" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">Can Academic AI Respect Student Privacy?</h5>
+            <p class="card-text">As performance predictors grow smarter, questions arise around data usage. Our platform ensures encrypted processing and local insights—no data ever leaves the classroom.</p>
+            <a href="https://edly.io/blog/artificial-intelligence-in-education-and-privacy-concerns/" class="btn btn-readmore">READ MORE</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+  <h2>What Schools Are Saying</h2>
+
+  <div class="testimonial-container">
+
+    <!-- Testimonial 1 -->
+    <div class="testimonial-card">
+      <div class="testimonial-header">
+        <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Emily Watson">
+        <div class="info">
+          <h4>Dr. Emily Watson</h4>
+          <small>Principal, Lincoln High School, Illinois</small>
+        </div>
+      </div>
+      <p>“This predictor gave our faculty deep insights into where students needed extra support. It's an academic game-changer.”</p>
+    </div>
+
+    <!-- Testimonial 2 -->
+    <div class="testimonial-card">
+      <div class="testimonial-header">
+        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Anderson">
+        <div class="info">
+          <h4>Michael Anderson</h4>
+          <small>Academic Advisor, Roosevelt Prep, New York</small>
+        </div>
+      </div>
+      <p>“It helped us predict mid-term drop risks and intervene early. Our pass rates went up by 12% last semester!”</p>
+    </div>
+
+    <!-- Testimonial 3 -->
+    <div class="testimonial-card">
+      <div class="testimonial-header">
+        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Sarah Mitchell">
+        <div class="info">
+          <h4>Sarah Mitchell</h4>
+          <small>Head of Data Science, Evergreen High, California</small>
+        </div>
+      </div>
+      <p>“Beautiful interface and surprisingly accurate. Our teachers rely on it every week.”</p>
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+
+
+{% endblock %}

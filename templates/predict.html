@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+{% block title %}Predict Student Performance{% endblock %}
+{% block content %}
+<style>
+  body {
+    background: linear-gradient(120deg, #0B0C10 0%, #1F2833 100%);
+    min-height: 100vh;
+  }
+  .predict-main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    max-width: 1100px;
+    margin: 48px auto 0 auto;
+    background: rgba(31,40,51,0.98);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 rgba(11,12,16,0.18);
+    overflow: hidden;
+    border: 1.5px solid #222933;
+  }
+  .predict-left {
+    flex: 1 1 350px;
+    min-width: 320px;
+    max-width: 480px;
+    background: linear-gradient(120deg, #0B0C10 0%, #1F2833 100%);
+    color: #66FCF1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 2rem 2.5rem 2rem;
+    position: relative;
+  }
+  .predict-left img,
+  .predict-container img {
+    width: 320px;
+    height: 200px;
+    max-width: 95%;
+    border-radius: 18px;
+    box-shadow: 0 6px 24px 0 rgba(69,162,158,0.22);
+    background: #fff;
+    object-fit: cover;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* Remove margin-bottom here to align images horizontally */
+  }
+
+  .predict-left .predict-img-align,
+  .predict-container .predict-img-align {
+    margin-bottom: 2rem;
+    margin-top: 0;
+    /* This class will be used to control vertical alignment */
+  }
+
+  .predict-main {
+    align-items: flex-start;
+  }
+  .predict-left h3 {
+    font-size: 2.3rem;
+    font-weight: 900;
+    margin-bottom: 1.1rem;
+    color: #66FCF1;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(69,162,158,0.08);
+    text-align: center;
+  }
+  .predict-left p, .predict-left ul {
+    font-size: 1.18rem;
+    color: #C5C6C7;
+    margin-bottom: 1.1rem;
+    line-height: 1.7;
+    text-align: left;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .predict-left ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    text-align: left;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .predict-left ul li {
+    margin-bottom: 0.5rem;
+    color: #66FCF1;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-align: left;
+  }
+  .predict-container {
+    flex: 1 1 420px;
+    min-width: 340px;
+    max-width: 600px;
+    background: #1F2833;
+    border-radius: 0 22px 22px 0;
+    box-shadow: none;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  /* Remove old .predict-container img rules, now unified above */
+  .predict-title {
+    color: #66FCF1;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+    margin-top: 0rem;
+    letter-spacing: 1px;
+    text-align: center;
+    font-size: 2.2rem;
+  }
+  .form-label {
+    color: #45A29E;
+    font-weight: 700;
+  }
+  .form-control, .form-select {
+    border-radius: 8px;
+    border: 1.5px solid #45A29E;
+    background: #C5C6C7;
+    color: #0B0C10;
+    font-size: 1.08rem;
+    margin-bottom: 0.5rem;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: #66FCF1;
+    box-shadow: 0 0 0 0.2rem #66FCF133;
+  }
+  .btn-predict {
+    background: linear-gradient(90deg, #66FCF1 60%, #45A29E 100%);
+    color: #0B0C10;
+    font-weight: 900;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 2.5rem;
+    font-size: 1.15rem;
+    transition: background 0.2s;
+    margin-top: 1.2rem;
+    box-shadow: 0 2px 8px 0 #45A29E33;
+    letter-spacing: 1px;
+  }
+  .btn-predict:hover {
+    background: linear-gradient(90deg, #45A29E 60%, #66FCF1 100%);
+    color: #0B0C10;
+  }
+  @media (max-width: 900px) {
+    .predict-main {
+      flex-direction: column;
+      max-width: 98vw;
+    }
+    .predict-left, .predict-container {
+      border-radius: 0;
+      max-width: 100vw;
+      min-width: 0;
+    }
+    .predict-left {
+      border-radius: 22px 22px 0 0;
+      padding-bottom: 1.5rem;
+    }
+    .predict-container {
+      border-radius: 0 0 22px 22px;
+      padding-top: 1.5rem;
+    }
+  }
+</style>
+
+<div class="predict-main">
+  <div class="predict-left">
+    <img src="https://www.studybird.com.au/wp-content/uploads/2019/10/EAP.jpg" alt="Student Data Analysis" class="predict-img-align">
+    <h3>How Does This Work?</h3>
+    <p>
+      Acadivine leverages advanced AI and data analytics to help students and counselors understand, predict, and improve academic performance. By analyzing your academic, social, and personal factors, our model identifies key patterns and trends that can impact your success.
+    </p>
+    <ul>
+      <li>Personalized insights for every student</li>
+      <li>Spot risk factors early and take action</li>
+      <li>Plan effective interventions and support</li>
+      <li>Track progress and growth over time</li>
+    </ul>
+    <p>
+      <b>What happens when you submit?</b><br>
+      Your answers are processed securely and instantly. Our XGBoost-powered model, trained on thousands of real student records, predicts your likely performance and highlights areas for improvement.
+    </p>
+    <p>
+      <b>Who is this for?</b><br>
+      <span style="color:#66FCF1;">•</span> Students seeking to maximize their potential<br>
+      <span style="color:#66FCF1;">•</span> Counselors and educators supporting student growth<br>
+      <span style="color:#66FCF1;">•</span> Parents interested in their child's academic journey
+    </p>
+    <p>
+      <b>Why does it matter?</b><br>
+      Academic journeys are unique. Early identification of challenges and strengths can make a significant difference. With Acadivine, you gain a clear, actionable roadmap to success—whether you’re aiming for top grades, overcoming obstacles, or supporting others.
+    </p>
+    <ul>
+      <li>Confidential, instant predictions</li>
+      <li>Visualize your academic trends</li>
+      <li>Empower your next steps with data</li>
+      <li>Bridge the gap between students, parents, and educators</li>
+    </ul>
+    <p>
+      <b>How to get the most out of Acadivine?</b><br>
+      Use your results to set goals, seek guidance, and monitor your progress. Share your insights with mentors or counselors for tailored support. Return regularly to see how your efforts and habits shape your academic future.
+    </p>
+    <p style="font-size:1.05rem; color:#C5C6C7; margin-top:1.2rem; text-align:left; max-width:420px; margin-left:auto; margin-right:auto;">
+      <i>Acadivine is your partner in unlocking academic potential and making data-driven decisions for a brighter future.</i>
+    </p>
+  </div>
+  <div class="predict-container">
+    <img src="https://www.forbes.com/advisor/wp-content/uploads/2022/07/laptop.jpeg.jpg" alt="predicting_score" class="predict-img-align">
+    <h2 class="predict-title">Predict Student Performance</h2>
+    <form method="POST" action="{{ url_for('predict') }}">
+      <div class="mb-3">
+        <label class="form-label">Gender</label>
+        <select class="form-select" name="Gender" required>
+          <option value="">Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+          <option value="Prefer not to say">Prefer not to say</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Age</label>
+        <input type="number" class="form-control" name="Age" min="10" max="30" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Previous GPA (0–4)</label>
+        <input type="number" step="0.01" class="form-control" name="Previous GPA" min="0" max="4" placeholder="Enter GPA between 0 and 4" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Past class failures</label>
+        <input type="number" class="form-control" name="Past class failures" min="0" max="10" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Study time per week (hours)</label>
+        <input type="number" class="form-control" name="Study time per week" min="0" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Attendance rate (%)</label>
+        <input type="number" step="0.1" class="form-control" name="Attendance rate" min="0" max="100" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Parental education level (1-4)</label>
+        <input type="number" step="0.1" class="form-control" name="Parental education level" min="1" max="4" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Socioeconomic status</label>
+        <select class="form-select" name="Socioeconomic status" required>
+          <option value="">Select</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Motivation level (1-5)</label>
+        <input type="number" class="form-control" name="Motivation level" min="1" max="5" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Self-discipline (1-5)</label>
+        <input type="number" class="form-control" name="Self-discipline" min="1" max="5" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Health status (1-5)</label>
+        <input type="number" class="form-control" name="Health status" min="1" max="5" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Hours of sleep (per week)</label>
+        <input type="number" class="form-control" name="Hours of sleep" min="0" placeholder="Enter hours of sleep per week (0-70)" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Parental involvement (1-5)</label>
+        <input type="number" class="form-control" name="Parental involvement" min="1" max="5" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Peer support (1-5)</label>
+        <input type="number" class="form-control" name="Peer support" min="1" max="5" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Participation in extracurricular activities</label>
+        <select class="form-select" name="Participation in extracurricular activities" required>
+          <option value="">Select</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-predict">Predict Performance</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

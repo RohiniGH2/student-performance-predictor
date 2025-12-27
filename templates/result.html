@@ -1,0 +1,1416 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div id="toast-container">
+      {% for category, message in messages %}
+        <div class="toast toast-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    <script>
+      // Simple toast fade out after 3 seconds
+      setTimeout(function() {
+        var toast = document.getElementById('toast-container');
+        if (toast) toast.style.display = 'none';
+      }, 3000);
+    </script>
+    <style>
+      #toast-container {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        z-index: 9999;
+      }
+      
+      .toast {
+        background: #5f5bd3;
+        color: #fff;
+        padding: 1em 2em;
+        border-radius: 1em;
+        margin-bottom: 1em;
+        box-shadow: 0 4px 24px #a770ef22;
+        font-weight: 600;
+        font-size: 1.1em;
+        opacity: 0.95;
+        transition: opacity 0.5s;
+      }
+      .toast-success { background: #43e0a7; }
+      .toast-error { background: #d15f7d; }
+    </style>
+  {% endif %}
+{% endwith %}
+<style>
+/* Enhanced Feedback & Chat Section Styling */
+.feedback-chat-row {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 2.7rem;
+  margin-bottom: 2.7rem;
+  align-items: stretch;
+}
+.feedback-chat-container {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.feedback-section, .chat-section {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px 0 rgba(95,192,201,0.13), 0 1.5px 8px #b7ded933;
+  padding: 2.2rem 2.2rem 1.7rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  border: 1.5px solid #e3e3e3;
+}
+.feedback-section {
+  background: linear-gradient(120deg, #eaf6f6 60%, #f7cac9 100%);
+  margin-right: 0.5rem;
+}
+.chat-section {
+  background: linear-gradient(120deg, #f7cac9 60%, #eaf6f6 100%);
+  margin-left: 0.5rem;
+}
+.feedback-title, .chat-title {
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin-bottom: 1.3rem;
+  letter-spacing: 0.5px;
+  text-align: left;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #b7ded9;
+}
+.chat-title {
+  color: #70c1c8;
+  border-bottom: 2px solid #f7cac9;
+}
+.feedback-title {
+  color: #b76d6d;
+  border-bottom: 2px solid #eaf6f6;
+}
+.feedback-section .form-label, .chat-section .form-label {
+  color: #5fc0c9;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.feedback-section .form-control, .feedback-section .form-select,
+.chat-section .form-control {
+  border-radius: 0.8rem;
+  border: 1.5px solid #b7ded9;
+  background: #fff;
+  color: #222;
+  font-size: 1.08rem;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 1px 4px #b7ded933;
+  transition: border-color 0.2s;
+}
+.chat-section .form-control {
+  border: 1.5px solid #f7cac9;
+  color: #222;
+  min-height: 52px;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+  font-size: 1.13rem;
+}
+.feedback-section textarea.form-control {
+  min-height: 100px;
+  resize: vertical;
+}
+.feedback-section .btn-predict, .chat-section .btn-predict {
+  background: linear-gradient(90deg, #70c1c8 0%, #f7cac9 100%);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 0.8rem;
+  border: none;
+  box-shadow: 0 2px 8px 0 rgba(95,192,201,0.13);
+  margin-top: 0.5rem;
+  min-width: 160px;
+  padding: 0.7rem 1.2rem;
+  font-size: 1.1rem;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.feedback-section .btn-predict:hover, .chat-section .btn-predict:hover {
+  background: linear-gradient(90deg, #b76c6c 0%, #70c1c8 100%);
+  box-shadow: 0 4px 16px 0 rgba(183,108,108,0.13);
+}
+.feedback-section form, .chat-section form {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+.feedback-section textarea.form-control {
+  margin-bottom: 1.2rem;
+}
+.chat-section .mt-3, .feedback-section .mt-3 {
+  margin-top: 1.2rem !important;
+}
+@media (max-width: 900px) {
+  .feedback-chat-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .feedback-section, .chat-section {
+    margin: 0;
+    border-radius: 1.2rem;
+    border: 1.5px solid #e3e3e3;
+  }
+}
+/* White placeholder for chat-section input */
+.chat-section input::placeholder {
+  color: #fff !important;
+  opacity: 1;
+}
+</style>
+{% extends "base.html" %}
+{% block content %}
+<style>
+body {
+  background: linear-gradient(120deg, #0B0C10 0%, #1F2833 100%);
+  min-height: 100vh;
+}
+.result-container {
+  background: #1F2833;
+  border-radius: 28px;
+  box-shadow: 0 8px 32px 0 rgba(11,12,16,0.18);
+  max-width: 1200px;
+  margin: 48px auto 32px auto;
+  padding: 2.8rem 2.5rem 2.2rem 2.5rem;
+  border: 1.5px solid #222933;
+  position: relative;
+}
+.result-title {
+  color: #66FCF1;
+  font-weight: 900;
+  margin-bottom: 1.7rem;
+  text-align: center;
+  font-size: 2.4rem;
+  letter-spacing: 1.2px;
+  text-shadow: 0 2px 8px #45A29E33;
+}
+.grade-badge {
+  font-size: 3.1rem;
+  font-weight: bold;
+  padding: 0.7em 2.2em;
+  border-radius: 2.5em;
+  background: linear-gradient(90deg, #66FCF1 60%, #45A29E 100%);
+  color: #0B0C10;
+  margin-bottom: 1.2rem;
+  display: inline-block;
+  box-shadow: 0 2px 16px #45A29E33;
+  animation: pop 1.1s cubic-bezier(.23,1.12,.72,1.01);
+  letter-spacing: 2px;
+}
+@keyframes pop {
+  0% { transform: scale(0.7); opacity: 0.2; }
+  80% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.score-comparison-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
+  align-items: flex-start;
+  justify-content: center;
+}
+.score-col, .radar-col {
+  flex: 1 1 340px;
+  min-width: 320px;
+  max-width: 480px;
+  background: #0B0C10;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px 0 #45A29E22;
+  padding: 2.2rem 2rem 1.7rem 2rem;
+  margin: 0 auto;
+  color: #C5C6C7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.score-col h3, .radar-col h3 {
+  color: #66FCF1;
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 1.1rem;
+  letter-spacing: 0.7px;
+  text-align: center;
+}
+.score-col .progress {
+  height: 1.7rem;
+  border-radius: 1.2rem;
+  background: #C5C6C7;
+  margin-bottom: 1.7rem;
+  box-shadow: 0 1px 6px #45A29E33;
+}
+.score-col .progress-bar {
+  font-size: 1.15rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #66FCF1 60%, #45A29E 100%);
+  color: #0B0C10;
+  letter-spacing: 1px;
+}
+.score-col .score-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 1.08rem;
+  color: #45A29E;
+  margin-bottom: 0.7rem;
+}
+.score-col .score-labels span {
+  font-weight: 700;
+}
+.radar-col {
+  background: #1F2833;
+  box-shadow: 0 4px 24px 0 #66FCF122;
+}
+.radar-col canvas {
+  margin: 0 auto 1.2rem auto;
+  display: block;
+}
+.radar-col .radar-desc {
+  color: #C5C6C7;
+  font-size: 1.08rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.observations {
+  background: #0B0C10;
+  border-radius: 1.2rem;
+  padding: 1.3rem 1.7rem;
+  margin-bottom: 2.2rem;
+  color: #66FCF1;
+  font-size: 1.13rem;
+  box-shadow: 0 1px 8px #45A29E33;
+}
+.observations strong:before {
+  content: "\1F4C8  ";
+  font-size: 1.2em;
+}
+.personalized-tips {
+  background: #1F2833;
+  border-radius: 1.2rem;
+  padding: 1.3rem 1.7rem;
+  margin-bottom: 2.2rem;
+  color: #45A29E;
+  font-size: 1.13rem;
+  box-shadow: 0 1px 8px #66FCF133;
+}
+.personalized-tips strong:before {
+  content: "\1F4A1  ";
+  font-size: 1.2em;
+}
+.achievement-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-bottom: 2.2rem;
+}
+.badge-card {
+  background: linear-gradient(120deg, #66FCF1 60%, #45A29E 100%);
+  color: #0B0C10;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px 0 #66FCF122;
+  padding: 1.1em 1.7em;
+  font-size: 1.15em;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  letter-spacing: 0.5px;
+  min-width: 170px;
+  justify-content: center;
+}
+.badge-card .badge-icon {
+  font-size: 1.7em;
+  margin-right: 0.5em;
+}
+.tips-section {
+  margin-top: 2.7rem;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 2.1rem 0 1.5rem 0;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tips Feature Card Grid (matches index.html feature-card style) */
+.tips-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  margin-top: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+.tip-feature-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  background-color: #1F2833;
+  border-radius: 1.2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 1.5rem 1.2rem;
+  min-height: 120px;
+  width: 100%;
+  max-width: 420px;
+  border: none;
+}
+.tip-feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+.tip-feature-icon {
+  font-size: 2.3em;
+  margin-right: 1.1em;
+  margin-top: 0.1em;
+  color: #66FCF1;
+  filter: drop-shadow(0 2px 4px #45A29E55);
+  flex-shrink: 0;
+}
+.tip-feature-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.tip-feature-title {
+  color: #66FCF1;
+  font-weight: 700;
+  font-size: 1.13em;
+  margin-bottom: 0.2em;
+}
+.tip-feature-desc {
+  color: #C5C6C7;
+  font-size: 1em;
+  font-weight: 500;
+  line-height: 1.4;
+}
+@media (max-width: 900px) {
+  .tips-feature-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+}
+@media (max-width: 600px) {
+  .tips-feature-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .tip-feature-card {
+    max-width: 98vw;
+    padding: 1.1rem 0.7rem;
+  }
+}
+.tips-title {
+  color: #66FCF1;
+  font-size: 1.7rem;
+  font-weight: 900;
+  margin-bottom: 2.2rem;
+  letter-spacing: 0.8px;
+  text-align: center;
+  text-shadow: 0 2px 8px #45A29E33;
+}
+.tips-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.2rem 2.7rem;
+}
+.tip-card {
+  background: linear-gradient(120deg, #0B0C10 60%, #1F2833 100%);
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px 0 #66FCF122;
+  border: 2.5px solid #45A29E;
+  width: 260px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 1.5em 1.4em 1.3em 1.4em;
+  position: relative;
+  transition: box-shadow 0.2s, transform 0.2s;
+  z-index: 1;
+  overflow: visible;
+}
+.tip-card:hover {
+  box-shadow: 0 8px 32px #66FCF155, 0 2px 12px #45A29E55;
+  transform: translateY(-8px) scale(1.03);
+  z-index: 2;
+}
+.tip-card .tip-icon {
+  font-size: 2.1em;
+  margin-bottom: 0.5em;
+  filter: drop-shadow(0 2px 4px #45A29E55);
+  margin-right: 0.7em;
+  float: left;
+}
+.tip-card .tip-text {
+  color: #66FCF1;
+  font-size: 1.13em;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.1px;
+  display: inline-block;
+  vertical-align: middle;
+}
+@media (max-width: 1100px) {
+  .tips-cards {
+    gap: 1.2rem 1.2rem;
+  }
+  .tip-card {
+    width: 200px;
+    min-height: 120px;
+    font-size: 0.95em;
+    padding: 1em 0.8em 1em 0.8em;
+  }
+  .score-comparison-row {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+}
+@media (max-width: 700px) {
+  .tips-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem 0;
+  }
+  .tip-card {
+    width: 95vw;
+    min-width: 0;
+    font-size: 0.92em;
+    padding: 0.8em 0.5em 0.8em 0.5em;
+  }
+}
+.faq-section {
+  margin-top: 2.7rem;
+}
+.faq-title {
+  color: #b76d6d;
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-bottom: 1.1rem;
+  letter-spacing: 0.5px;
+}
+.faq-item {
+  background: #f7cac9;
+  border-radius: 0.8rem;
+  padding: 1.1rem 1.3rem;
+  margin-bottom: 0.8rem;
+  color: #5fc0c9;
+  font-size: 1.08rem;
+  box-shadow: 0 1px 6px #f7cac955;
+}
+
+/* Modern Tips Section as Cards */
+.tips-section {
+  margin-top: 2.7rem;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 2.1rem 0 1.5rem 0;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.tips-title {
+  color: #70c1c8;
+  font-size: 1.7rem;
+  font-weight: 900;
+  margin-bottom: 2.2rem;
+  letter-spacing: 0.8px;
+  text-align: center;
+  text-shadow: 0 2px 8px #b7ded933;
+}
+.tips-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.2rem 2.7rem;
+}
+.tip-card {
+  background: linear-gradient(120deg, #eaf6f6 60%, #f7cac9 100%);
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px 0 rgba(95,192,201,0.13), 0 1.5px 8px #b7ded933;
+  border: 2.5px solid #b7ded9;
+  width: 260px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 1.5em 1.4em 1.3em 1.4em;
+  position: relative;
+  transition: box-shadow 0.2s, transform 0.2s;
+  z-index: 1;
+  overflow: visible;
+}
+.tip-card:hover {
+  box-shadow: 0 8px 32px #70c1c855, 0 2px 12px #b7ded955;
+  transform: translateY(-8px) scale(1.03);
+  z-index: 2;
+}
+.tip-card .tip-icon {
+  font-size: 2.1em;
+  margin-bottom: 0.5em;
+  filter: drop-shadow(0 2px 4px #b7ded955);
+  margin-right: 0.7em;
+  float: left;
+}
+.tip-card .tip-text {
+  color: #b76d6d;
+  font-size: 1.13em;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.1px;
+  display: inline-block;
+  vertical-align: middle;
+}
+@media (max-width: 1100px) {
+  .tips-cards {
+    gap: 1.2rem 1.2rem;
+  }
+  .tip-card {
+    width: 200px;
+    min-height: 120px;
+    font-size: 0.95em;
+    padding: 1em 0.8em 1em 0.8em;
+  }
+}
+@media (max-width: 700px) {
+  .tips-cards {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem 0;
+  }
+  .tip-card {
+    width: 95vw;
+    min-width: 0;
+    font-size: 0.92em;
+    padding: 0.8em 0.5em 0.8em 0.5em;
+  }
+}
+/* Removed duplicate/erroneous feedback-section/chat-section block */
+.feedback-title {
+  color: #b76d6d;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 1.1rem;
+  letter-spacing: 0.5px;
+}
+.chat-title {
+  color: #70c1c8;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin-bottom: 1.1rem;
+  letter-spacing: 0.5px;
+}
+.try-again-btn {
+  display: inline-block;
+  min-width: 180px;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, #f9b6bb 0%, #5fc0c9 100%);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px 0 rgba(95,192,201,0.18);
+  transition: background 0.2s;
+  letter-spacing: 1px;
+  font-weight: 700;
+  border-radius: 10px;
+}
+.try-again-btn:hover {
+  background: linear-gradient(90deg, #b76c6c 0%, #70c1c8 100%);
+}
+  .feedback-section, .chat-section {
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    height: 100%;
+    margin-bottom: 2.2rem;
+  }
+.row > .col-md-6 {
+  display: flex;
+}
+.row > .col-md-6 > section {
+  flex: 1 1 100%;
+  height: 100%;
+}
+@media (max-width: 600px) {
+  .result-container {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+  .grade-badge {
+    font-size: 1.5rem;
+    padding: 0.4em 1em;
+  }
+  .faq-title, .tips-title, .feedback-title, .chat-title {
+    font-size: 1.1rem;
+  }
+}
+@media (max-width: 767px) {
+  .feedback-section, .chat-section {
+    min-height: unset;
+    height: unset;
+  }
+  .row > .col-md-6 {
+    display: block;
+  }
+  .row > .col-md-6 > section {
+    height: unset;
+  }
+}
+</style>
+<div class="result-container">
+  <div class="score-comparison-row" style="gap:2.5rem; align-items:stretch;">
+    <div class="score-col" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; min-height:370px;">
+      <h3 style="margin-bottom:1.2rem;">Your Predicted Final Grade</h3>
+      <div style="width:100%; display:flex; flex-direction:column; align-items:center; flex:1 1 auto; justify-content:center;">
+        <div style="width:100%; display:flex; justify-content:center; align-items:center; flex:1 1 auto; min-height:220px;">
+          <canvas id="gaugeChart" width="320" height="220" style="margin-bottom:0.7rem;"></canvas>
+        </div>
+        <span class="grade-badge" style="margin-bottom:0.7rem; font-size:2.2rem; padding:0.5em 1.5em; background:linear-gradient(90deg,#66FCF1 60%,#45A29E 100%); color:#0B0C10; border-radius:2.5em; box-shadow:0 2px 16px #45A29E33; display:inline-block;">{{ prediction }}/100</span>
+        <div class="score-labels" style="width:90%; margin-bottom:0.5rem;">
+          <span>0</span>
+          <span>100</span>
+        </div>
+      </div>
+    </div>
+    <div class="radar-col" style="display:flex; flex-direction:column; align-items:center; justify-content:space-between; min-height:370px;">
+      <h3 style="margin-bottom:1.2rem;">Performance Breakdown</h3>
+      <canvas id="radarChart" width="480" height="380" style="margin-bottom:0.7rem;"></canvas>
+      <div class="radar-desc" style="margin-top:auto;">See how you compare across key academic factors.</div>
+      <div class="radar-explanation" style="margin-top:1.2rem; color:#66FCF1; background:#0B0C10; border-radius:1.1rem; box-shadow:0 2px 12px #45A29E33; padding:1.1rem 1.3rem; font-size:1.09rem; text-align:center;">
+        {% if prediction|float >= 90 %}
+          <strong>Excellent balance!</strong> Your high scores across all factors show outstanding consistency and effort. Keep leveraging your strengths and consider helping others improve in areas where you excel.
+        {% elif prediction|float >= 75 %}
+          <strong>Strong profile!</strong> You perform well in most areas, but there may be one or two factors slightly below your average. Focus on those for even greater results next term.
+        {% elif prediction|float >= 60 %}
+          <strong>Good foundation!</strong> Your performance is solid, but the radar shows some areas for growth. Target your lowest factor for improvement and you'll see your overall score rise.
+        {% else %}
+          <strong>Room to grow!</strong> The radar highlights key areas to focus on. Start with the lowest factor, set small goals, and celebrate each improvement. Progress is always possible!
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div style="display:flex; justify-content:center; margin-top:1.5rem; margin-bottom:2.2rem;">
+    <a href="{{ url_for('predict') }}" class="btn btn-predict try-again-btn" style="background:linear-gradient(90deg,#66FCF1 0%,#45A29E 100%); color:#0B0C10; font-weight:700; min-width:180px; font-size:1.1rem; border-radius:10px; box-shadow:0 2px 8px 0 #45A29E33;">Try Again</a>
+  </div>
+  <section class="feedback-section-modern">
+    <div class="feedback-block feedback-block-feedback">
+      <div class="feedback-block-header">
+        <span class="feedback-block-icon">📈</span>
+        <span class="feedback-block-title">Personalized Feedback & Suggestions</span>
+      </div>
+      <div class="feedback-block-summary">
+        {% if prediction|float >= 90 %}
+          <span class="summary-highlight">Outstanding! You're at the top of your game.</span>
+        {% elif prediction|float >= 75 %}
+          <span class="summary-highlight">Great job! You're on a strong path to success.</span>
+        {% elif prediction|float >= 60 %}
+          <span class="summary-highlight">Solid progress! Keep building your strengths.</span>
+        {% else %}
+          <span class="summary-highlight">Every step counts—keep moving forward!</span>
+        {% endif %}
+      </div>
+      <ul class="feedback-block-list">
+        {% if prediction|float >= 90 %}
+          <li>Phenomenal achievement! Your dedication and discipline are truly inspiring. Consider mentoring others or taking on leadership roles in group projects.</li>
+          <li>Keep pushing your boundaries—explore advanced topics or competitions to further challenge yourself.</li>
+        {% elif prediction|float >= 75 %}
+          <li>Great work! You have a strong grasp of your studies. Focus on refining your skills in areas where you scored slightly lower for an even better result.</li>
+          <li>Try setting a new personal best next term and experiment with new study techniques to keep things fresh.</li>
+        {% elif prediction|float >= 60 %}
+          <li>You're making solid progress. Identify one or two subjects to focus on and seek feedback from teachers to boost your confidence.</li>
+          <li>Consider joining a study group or using digital tools to track your learning habits.</li>
+        {% else %}
+          <li>Every journey has ups and downs. Reflect on your current strategies and don't hesitate to ask for help—small changes can lead to big improvements.</li>
+          <li>Build a routine, celebrate small wins, and remember: persistence is key to growth!</li>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="feedback-block feedback-block-tips">
+      <div class="feedback-block-header">
+        <span class="feedback-block-icon">💡</span>
+        <span class="feedback-block-title">Actionable Next Steps</span>
+      </div>
+      <div class="feedback-block-summary">
+        {% if prediction|float >= 90 %}
+          <span class="summary-highlight">Keep challenging yourself and inspire others!</span>
+        {% elif prediction|float >= 75 %}
+          <span class="summary-highlight">Small improvements can make a big difference.</span>
+        {% elif prediction|float >= 60 %}
+          <span class="summary-highlight">Focus and consistency will boost your results.</span>
+        {% else %}
+          <span class="summary-highlight">Start with one step—progress will follow.</span>
+        {% endif %}
+      </div>
+      <ul class="feedback-block-list">
+        {% if prediction|float >= 90 %}
+          <li>Challenge yourself with advanced coursework or competitions.</li>
+          <li>Share your strategies with peers and help build a collaborative learning environment.</li>
+          <li>Maintain your momentum by setting new, ambitious goals.</li>
+        {% elif prediction|float >= 75 %}
+          <li>Identify your strongest and weakest subjects, and allocate extra time to the latter.</li>
+          <li>Experiment with new study methods, like spaced repetition or peer teaching.</li>
+          <li>Stay consistent and reward yourself for progress.</li>
+        {% elif prediction|float >= 60 %}
+          <li>Set short-term, achievable goals for each week.</li>
+          <li>Use online resources or apps to reinforce learning outside the classroom.</li>
+          <li>Ask for feedback regularly and adjust your approach as needed.</li>
+        {% else %}
+          <li>Reach out to a teacher or mentor for personalized advice.</li>
+          <li>Break tasks into smaller steps and celebrate each accomplishment.</li>
+          <li>Focus on building healthy habits—sleep, nutrition, and regular study times.</li>
+        {% endif %}
+      </ul>
+    </div>
+  </section>
+  <style>
+  .feedback-section-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 2.7rem;
+    margin: 2.7rem 0 2.7rem 0;
+  }
+  .feedback-block {
+    background: none;
+    border-radius: 1.2rem;
+    border-left: 7px solid #66FCF1;
+    padding: 2.2rem 2.2rem 1.7rem 2.7rem;
+    margin-bottom: 0;
+    color: #C5C6C7;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: 180px;
+    box-shadow: none;
+    position: relative;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .feedback-block-tips {
+    border-left: 7px solid #45A29E;
+  }
+  .feedback-block-tips .feedback-block-title,
+  .feedback-block-tips .feedback-block-list,
+  .feedback-block-tips .summary-highlight,
+  .feedback-block-tips .feedback-block-summary {
+    color: #66FCF1 !important;
+    text-shadow: none;
+  }
+  .feedback-block-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.1rem;
+  }
+  .feedback-block-icon {
+    font-size: 2.2em;
+    margin-right: 0.7em;
+    filter: drop-shadow(0 2px 4px #45A29E55);
+  }
+  .feedback-block-title {
+    color: #66FCF1;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: 0.7px;
+    text-shadow: 0 2px 8px #45A29E33;
+  }
+  .feedback-block-tips .feedback-block-title {
+    color: #45A29E;
+  }
+  .feedback-block-summary {
+    margin-bottom: 1.1rem;
+    font-size: 1.18rem;
+    color: #45A29E;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+  }
+  .feedback-block-tips .feedback-block-summary {
+    color: #66FCF1;
+  }
+  .summary-highlight {
+    color: #66FCF1;
+    font-weight: 800;
+    font-size: 1.13em;
+  }
+  .feedback-block-tips .summary-highlight {
+    color: #45A29E;
+  }
+  .feedback-block-list {
+    margin-top: 0.3em;
+    margin-bottom: 0;
+    padding-left: 1.2em;
+    font-size: 1.18em;
+    color: #66FCF1;
+    list-style: disc inside;
+  }
+  .feedback-block-tips .feedback-block-list {
+    color: #45A29E;
+  }
+  .feedback-block-list li {
+    margin-bottom: 0.7em;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+  @media (max-width: 900px) {
+    .feedback-section-modern {
+      gap: 1.5rem;
+    }
+    .feedback-block {
+      padding: 1.2rem 1.2rem 1rem 1.5rem;
+    }
+  }
+  </style>
+  <section class="chart-section mb-4" style="display: flex; flex-wrap: wrap; gap: 2.5rem; justify-content: center; align-items: stretch;">
+    <div style="background:#0B0C10; border-radius:1.2rem; box-shadow:0 4px 24px 0 #45A29E22; padding:1.5rem 1.2rem; margin-bottom:1.2rem; display:flex; flex-direction:column; align-items:center; min-width:260px; min-height:180px; flex:1 1 260px; justify-content:center;">
+      <canvas id="comparisonChart" height="120" width="220"></canvas>
+      <div style="color:#66FCF1; font-size:1.08rem; margin-top:0.7em;">Your Score vs Class Average</div>
+    </div>
+    <div style="background:#0B0C10; border-radius:1.2rem; box-shadow:0 4px 24px 0 #45A29E22; padding:1.5rem 1.2rem; margin-bottom:1.2rem; display:flex; flex-direction:column; align-items:center; min-width:260px; min-height:180px; flex:1 1 260px; justify-content:center;">
+      <canvas id="sparklineChart" width="220" height="60"></canvas>
+      <div style="color:#C5C6C7; font-size:1.08rem; margin-top:0.7em;">
+        Performance Trend
+        {% if prediction|float >= 90 %}
+          <span style="color:#66FCF1; font-weight:700; margin-left:0.7em;">🏅 Top Performer</span>
+        {% elif prediction|float >= 60 %}
+          <span style="color:#66FCF1; font-weight:700; margin-left:0.7em;">📈 On the Rise</span>
+        {% else %}
+          <span style="color:#66FCF1; font-weight:700; margin-left:0.7em;">💡 Growth Mindset</span>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  <!-- Pie Charts Section: Academic Insights -->
+  <section class="piecharts-section" style="margin: 2.7rem 0 2.7rem 0;">
+    <div class="piecharts-title">Academic Insights at a Glance</div>
+    <div class="piecharts-2x2-grid">
+      <div class="piechart-card">
+        <canvas id="factorPieChart" width="220" height="220"></canvas>
+        <div class="piechart-label">Factor Contribution to Predicted Grade</div>
+      </div>
+      <div class="piechart-card">
+        <canvas id="timePieChart" width="220" height="220"></canvas>
+        <div class="piechart-label">Your Weekly Time Allocation</div>
+      </div>
+      <div class="piechart-card">
+        <canvas id="scoreDistPieChart" width="220" height="220"></canvas>
+        <div class="piechart-label">Class Numeric Score Distribution</div>
+      </div>
+      <div class="piechart-card">
+        <canvas id="goalPieChart" width="220" height="220"></canvas>
+        <div class="piechart-label">Your Grade vs. Target</div>
+      </div>
+    </div>
+  </section>
+  <style>
+    .piecharts-title {
+      color: #66FCF1;
+      font-size: 1.7rem;
+      font-weight: 900;
+      margin-bottom: 2.2rem;
+      letter-spacing: 0.8px;
+      text-align: center;
+      text-shadow: 0 2px 8px #45A29E33;
+    }
+    .piecharts-2x2-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 2.2rem 2.7rem;
+      justify-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .piechart-card {
+      background: #0B0C10;
+      border-radius: 1.2rem;
+      box-shadow: 0 4px 24px 0 #45A29E22;
+      padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 280px;
+      min-height: 260px;
+      max-width: 400px;
+      width: 100%;
+      border: 2.5px solid #45A29E33;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .piechart-card:hover {
+      box-shadow: 0 8px 32px #66FCF155, 0 2px 12px #45A29E55;
+      transform: translateY(-8px) scale(1.03);
+    }
+    .piechart-label {
+      color: #66FCF1;
+      font-size: 1.08em;
+      font-weight: 700;
+      margin-top: 1.1em;
+      text-align: center;
+    }
+    @media (max-width: 900px) {
+      .piecharts-2x2-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 1.2rem 1.2rem;
+      }
+    }
+    @media (max-width: 600px) {
+      .piecharts-2x2-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        gap: 1rem;
+      }
+      .piechart-card {
+        max-width: 98vw;
+        padding: 1.1rem 0.7rem 1.1rem 0.7rem;
+      }
+    }
+  </style>
+    <div class="tips-title">General Tips for Academic Success</div>
+    <div class="tips-feature-grid">
+      <div class="feature-card tip-feature-card">
+        <div class="tip-feature-icon">📚</div>
+        <div class="tip-feature-content">
+          <div class="tip-feature-title">Consistent Study</div>
+          <div class="tip-feature-desc">Maintain a regular study schedule to reinforce learning.</div>
+        </div>
+      </div>
+      <div class="feature-card tip-feature-card">
+        <div class="tip-feature-icon">💬</div>
+        <div class="tip-feature-content">
+          <div class="tip-feature-title">Active Participation</div>
+          <div class="tip-feature-desc">Engage in class and ask questions to clarify doubts.</div>
+        </div>
+      </div>
+      <div class="feature-card tip-feature-card">
+        <div class="tip-feature-icon">😴</div>
+        <div class="tip-feature-content">
+          <div class="tip-feature-title">Healthy Habits</div>
+          <div class="tip-feature-desc">Prioritize sleep and self-care for better focus.</div>
+        </div>
+      </div>
+      <div class="feature-card tip-feature-card">
+        <div class="tip-feature-icon">🤝</div>
+        <div class="tip-feature-content">
+          <div class="tip-feature-title">Seek Support</div>
+          <div class="tip-feature-desc">Ask teachers or peers for help when needed.</div>
+        </div>
+      </div>
+      <div class="feature-card tip-feature-card">
+        <div class="tip-feature-icon">🎯</div>
+        <div class="tip-feature-content">
+          <div class="tip-feature-title">Stay Motivated</div>
+          <div class="tip-feature-desc">Set realistic goals and track your progress.</div>
+        </div>
+      </div>
+      <div class="feature-card tip-feature-card">
+        <div class="tip-feature-icon">🧠</div>
+        <div class="tip-feature-content">
+          <div class="tip-feature-title">Mindfulness</div>
+          <div class="tip-feature-desc">Practice stress management and mindfulness techniques.</div>
+        </div>
+      </div>
+      <div class="feature-card tip-feature-card">
+        <div class="tip-feature-icon">📝</div>
+        <div class="tip-feature-content">
+          <div class="tip-feature-title">Self-Testing</div>
+          <div class="tip-feature-desc">Review notes regularly and test your understanding.</div>
+        </div>
+      </div>
+      <div class="feature-card tip-feature-card">
+        <div class="tip-feature-icon">🥗</div>
+        <div class="tip-feature-content">
+          <div class="tip-feature-title">Healthy Eating</div>
+          <div class="tip-feature-desc">Eat nutritious food and stay hydrated for energy.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="faq-section" style="background:#1F2833; border-radius:1.2rem; box-shadow:0 4px 24px 0 #45A29E22; padding:2.2rem 2.2rem 1.7rem 2.2rem; margin-top:2.7rem;">
+    <div class="faq-title" style="color:#66FCF1;">Frequently Asked Questions</div>
+    <div class="accordion" id="faqAccordion">
+      <div class="accordion-item" style="background:#0B0C10; border-radius:0.8rem; margin-bottom:0.8rem; color:#C5C6C7;">
+        <h2 class="accordion-header" id="faq1">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" style="background:#45A29E; color:#0B0C10; font-weight:700;">
+            How is my grade predicted?
+          </button>
+        </h2>
+        <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="faq1" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background:#1F2833; color:#66FCF1;">
+            We use a machine learning model trained on real student data and your provided information. The radar chart above shows your strengths and areas to improve.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item" style="background:#0B0C10; border-radius:0.8rem; margin-bottom:0.8rem; color:#C5C6C7;">
+        <h2 class="accordion-header" id="faq2">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2" style="background:#45A29E; color:#0B0C10; font-weight:700;">
+            Is my data stored?
+          </button>
+        </h2>
+        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="faq2" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background:#1F2833; color:#66FCF1;">
+            No, your data is used only for this prediction and is not saved.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item" style="background:#0B0C10; border-radius:0.8rem; margin-bottom:0.8rem; color:#C5C6C7;">
+        <h2 class="accordion-header" id="faq3">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3" style="background:#45A29E; color:#0B0C10; font-weight:700;">
+            How can I improve my score?
+          </button>
+        </h2>
+        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="faq3" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background:#1F2833; color:#66FCF1;">
+            Focus on attendance, motivation, and healthy study habits. See the tips and personalized suggestions above!
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item" style="background:#0B0C10; border-radius:0.8rem; margin-bottom:0.8rem; color:#C5C6C7;">
+        <h2 class="accordion-header" id="faq4">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4" style="background:#45A29E; color:#0B0C10; font-weight:700;">
+            What if my prediction is lower than expected?
+          </button>
+        </h2>
+        <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="faq4" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background:#1F2833; color:#66FCF1;">
+            Don't worry! Use the suggestions above, talk to your teachers, and try to identify areas for improvement. The radar chart can help you spot which factors to focus on.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item" style="background:#0B0C10; border-radius:0.8rem; margin-bottom:0.8rem; color:#C5C6C7;">
+        <h2 class="accordion-header" id="faq5">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5" aria-expanded="false" aria-controls="collapse5" style="background:#45A29E; color:#0B0C10; font-weight:700;">
+            Can I use this tool for other students?
+          </button>
+        </h2>
+        <div id="collapse5" class="accordion-collapse collapse" aria-labelledby="faq5" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background:#1F2833; color:#66FCF1;">
+            Yes! Just click "Try Again" and enter new student data to get a new prediction.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item" style="background:#0B0C10; border-radius:0.8rem; margin-bottom:0.8rem; color:#C5C6C7;">
+        <h2 class="accordion-header" id="faq6">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6" aria-expanded="false" aria-controls="collapse6" style="background:#45A29E; color:#0B0C10; font-weight:700;">
+            What are achievement badges?
+          </button>
+        </h2>
+        <div id="collapse6" class="accordion-collapse collapse" aria-labelledby="faq6" data-bs-parent="#faqAccordion">
+          <div class="accordion-body" style="background:#1F2833; color:#66FCF1;">
+            Badges are awarded for your performance and engagement. Try again to earn different badges!
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="feedback-chat-row">
+    <div class="feedback-chat-container">
+      <section class="feedback-section" style="background:#1F2833; border:1.5px solid #45A29E; box-shadow:0 4px 24px 0 #45A29E22;">
+        <div class="feedback-title" style="color:#66FCF1;">Feedback</div>
+        <form method="POST" action="{{ url_for('feedback') }}">
+          <div class="mb-2">
+            <label class="form-label" style="color:#C5C6C7;">How helpful was this prediction?</label>
+            <select class="form-select" name="helpful" style="background:#0B0C10; color:#66FCF1; border:1.5px solid #45A29E;">
+              <option style="background:#0B0C10; color:#66FCF1;">Very helpful</option>
+              <option style="background:#0B0C10; color:#66FCF1;">Somewhat helpful</option>
+              <option style="background:#0B0C10; color:#66FCF1;">Not helpful</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" style="color:#C5C6C7;">Comments</label>
+            <textarea class="form-control" name="comments" rows="2" style="background:#0B0C10; color:#66FCF1; border:1.5px solid #45A29E;"></textarea>
+          </div>
+          <button type="submit" class="btn btn-predict" style="background:linear-gradient(90deg,#66FCF1 0%,#45A29E 100%);color:#0B0C10; font-weight:700;">Submit Feedback</button>
+        </form>
+        {% if session.get('feedback_success') %}
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              alert('Thank you for your feedback!');
+            }, 300);
+          }
+        </script>
+        {% endif %}   
+      </section>
+    </div>
+    <div class="feedback-chat-container">
+      <section class="chat-section" style="background:#1F2833; border:1.5px solid #45A29E; box-shadow:0 4px 24px 0 #45A29E22;">
+        <div class="chat-title" style="color:#66FCF1;">Ask a Question or Chat</div>
+        <form method="POST" action="{{ url_for('chat') }}">
+          <div class="mb-2">
+            <input type="text" class="form-control" name="question" placeholder="Type your question here..." style="background:#0B0C10; color:#66FCF1; border:1.5px solid #45A29E;">
+          </div>
+          <button type="submit" class="btn btn-predict" style="background:linear-gradient(90deg,#66FCF1 0%,#45A29E 100%);color:#0B0C10; font-weight:700;">Post Question</button>
+        </form>
+        {% if session.get('chat_success') %}
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              alert('Thank you for your question!');
+            }, 300);
+          }
+        </script>
+        {% endif %}
+        <!-- No chat response shown; handled by dialog pop-up on submit -->
+      </section>
+    </div>
+  </div>
+<!-- Dialog Modal for Thank You Message -->
+
+</div>
+<!-- Chart.js for bar, radar, gauge, and sparkline charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const userScore = parseFloat("{{ prediction|float }}");
+const classAvg = 72;
+
+// Bar chart: Comparison to class average
+const ctx = document.getElementById('comparisonChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['You', 'Class Avg'],
+    datasets: [{
+      label: 'Score',
+      data: [userScore, classAvg],
+      backgroundColor: ['#66FCF1', '#45A29E'],
+      borderRadius: 12
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, max: 100, grid: { color: '#222933' }, ticks: { color: '#C5C6C7' } },
+      x: { ticks: { color: '#C5C6C7' } }
+    }
+  }
+});
+
+// Radar chart: Simulated breakdown (replace with real data if available)
+const radar = document.getElementById('radarChart').getContext('2d');
+const radarLabels = ['Attendance', 'Motivation', 'Study Time', 'Health', 'Support', 'Discipline'];
+const radarData = [
+  Math.max(40, Math.min(100, userScore + 10)),
+  Math.max(40, Math.min(100, userScore - 5)),
+  Math.max(40, Math.min(100, userScore - 10)),
+  Math.max(40, Math.min(100, userScore - 15)),
+  Math.max(40, Math.min(100, userScore - 20)),
+  Math.max(40, Math.min(100, userScore - 8))
+];
+new Chart(radar, {
+  type: 'radar',
+  data: {
+    labels: radarLabels,
+    datasets: [{
+      label: 'Your Profile',
+      data: radarData,
+      backgroundColor: 'rgba(102,252,241,0.18)',
+      borderColor: '#66FCF1',
+      pointBackgroundColor: '#45A29E',
+      borderWidth: 2,
+      pointRadius: 5
+    }]
+  },
+  options: {
+    responsive: false,
+    layout: { padding: 30 }, // Add padding to keep labels inside
+    plugins: { legend: { display: false } },
+    scales: {
+      r: {
+        angleLines: { color: '#45A29E33' },
+        grid: { color: '#45A29E33' },
+        pointLabels: {
+          color: '#66FCF1',
+          font: { size: 17, weight: 'bold' }, // Reduce font size for better fit
+          padding: 8 // Add extra padding to pull labels inwards
+        },
+        min: 0,
+        max: 100,
+        ticks: { color: '#C5C6C7', stepSize: 20 }
+      }
+    }
+  }
+});
+
+// Gauge chart: Out-of-the-box style for predicted grade (now inside score-col, above)
+const gauge = document.getElementById('gaugeChart').getContext('2d');
+const gaugeValue = userScore;
+const gaugeChart = new Chart(gauge, {
+  type: 'doughnut',
+  data: {
+    labels: ['Score', 'Remainder'],
+    datasets: [{
+      data: [gaugeValue, 100 - gaugeValue],
+      backgroundColor: [
+        gaugeValue >= 90 ? '#66FCF1' : gaugeValue >= 75 ? '#45A29E' : '#C5C6C7',
+        '#1F2833'
+      ],
+      borderWidth: 0,
+      cutout: '70%',
+      borderRadius: 30
+    }]
+  },
+  options: {
+    rotation: -90,
+    circumference: 180,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false }
+    }
+  },
+  plugins: [{
+    id: 'centerText',
+    afterDraw: function(chart) {
+      const { ctx, chartArea } = chart;
+      ctx.save();
+      ctx.font = 'bold 2.7rem Montserrat, Arial';
+      ctx.fillStyle = '#66FCF1';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(gaugeValue.toFixed(2), chart.width / 2, chart.height * 0.75);
+      ctx.font = 'bold 1.3rem Montserrat, Arial';
+      ctx.fillStyle = '#45A29E';
+      ctx.fillText('/100', chart.width / 2, chart.height * 0.75 + 36);
+      ctx.restore();
+    }
+  }]
+});
+
+// Sparkline chart: Simulated performance trend
+const spark = document.getElementById('sparklineChart').getContext('2d');
+const trend = [
+  Math.max(40, userScore - 15),
+  Math.max(45, userScore - 10),
+  Math.max(50, userScore - 5),
+  userScore,
+  Math.min(100, userScore + 2),
+  Math.min(100, userScore + 4)
+];
+new Chart(spark, {
+  type: 'line',
+  data: {
+    labels: ['', '', '', '', '', ''],
+    datasets: [{
+      data: trend,
+      borderColor: '#66FCF1',
+      backgroundColor: 'rgba(102,252,241,0.13)',
+      borderWidth: 3,
+      pointRadius: 0,
+      tension: 0.5,
+      fill: true
+    }]
+  },
+  options: {
+    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    scales: {
+      y: { display: false, min: 0, max: 100 },
+      x: { display: false }
+    }
+  }
+});
+
+// PIE CHARTS SECTION
+// 1. Factor Contribution Pie Chart (colorful palette)
+const factorPie = document.getElementById('factorPieChart').getContext('2d');
+new Chart(factorPie, {
+  type: 'pie',
+  data: {
+    labels: radarLabels,
+    datasets: [{
+      data: radarData,
+      backgroundColor: [
+        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+      ],
+      borderColor: '#fff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { display: true, labels: { color: '#66FCF1', font: { weight: 'bold' } } },
+      tooltip: { enabled: true }
+    }
+  }
+});
+
+// 2. Time Allocation Pie Chart (colorful palette)
+const timePie = document.getElementById('timePieChart').getContext('2d');
+const timeLabels = ['Study', 'Sleep', 'Extracurriculars', 'Social', 'Other'];
+const timeData = [28, 56, 14, 10, 10]; // hours per week (example)
+new Chart(timePie, {
+  type: 'pie',
+  data: {
+    labels: timeLabels,
+    datasets: [{
+      data: timeData,
+      backgroundColor: [
+        '#FFB347', '#77DD77', '#779ECB', '#F49AC2', '#C23B22'
+      ],
+      borderColor: '#fff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { display: true, labels: { color: '#66FCF1', font: { weight: 'bold' } } },
+      tooltip: { enabled: true }
+    }
+  }
+});
+
+// 3. Numeric Class Score Distribution Pie Chart (bins)
+const scoreDistPie = document.getElementById('scoreDistPieChart').getContext('2d');
+const scoreDistLabels = ['90-100', '80-89', '70-79', '60-69', '0-59'];
+const scoreDistData = [7, 13, 15, 8, 3]; // example bin counts
+new Chart(scoreDistPie, {
+  type: 'pie',
+  data: {
+    labels: scoreDistLabels,
+    datasets: [{
+      data: scoreDistData,
+      backgroundColor: [
+        '#FFD700', '#00BFFF', '#FF69B4', '#32CD32', '#FF6347'
+      ],
+      borderColor: '#fff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { display: true, labels: { color: '#66FCF1', font: { weight: 'bold' } } },
+      tooltip: { enabled: true }
+    }
+  }
+});
+
+// 4. Predicted Grade vs. Target/Goal Pie Chart (colorful)
+const goalPie = document.getElementById('goalPieChart').getContext('2d');
+const goalTarget = 100;
+const goalData = [userScore, Math.max(0, goalTarget - userScore)];
+new Chart(goalPie, {
+  type: 'pie',
+  data: {
+    labels: ['Your Predicted Grade', 'To Target'],
+    datasets: [{
+      data: goalData,
+      backgroundColor: [
+        '#00C49A', '#FFBB28'
+      ],
+      borderColor: '#fff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { display: true, labels: { color: '#66FCF1', font: { weight: 'bold' } } },
+      tooltip: { enabled: true }
+    }
+  }
+});
+</script>
+{% endblock %}

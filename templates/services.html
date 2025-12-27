@@ -1,0 +1,571 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+:root {
+  --indigo: #2B2F6C;
+  --purple: #564779;
+  --mauve: #9D6C82;
+  --rose: #C17F8B;
+  --coral: #DE978F;
+}
+body {
+  background: var(--indigo);
+  font-family: 'Segoe UI', 'Times New Roman', Times, serif;
+  color: #f4f4f4;
+}
+.services-hero {
+  background: linear-gradient(135deg, var(--purple) 0%, var(--rose) 100%);
+  padding: 5rem 1rem 3rem;
+  text-align: center;
+  border-bottom: 2px solid var(--coral);
+  box-shadow: 0 0 32px rgba(222,151,143,0.2);
+  position: relative;
+  overflow: hidden;
+}
+.services-hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--coral) 0%, transparent 70%);
+  opacity: 0.18;
+  z-index: 0;
+}
+.services-hero h1 {
+  font-size: 3.3rem;
+  font-weight: 900;
+  color: var(--coral);
+  text-shadow: 0 0 18px var(--mauve);
+  letter-spacing: 1.5px;
+  z-index: 1;
+  position: relative;
+}
+.services-hero p {
+  color: #f6dede;
+  font-size: 1.35rem;
+  opacity: 1;
+  margin-top: 1.2rem;
+  z-index: 1;
+  position: relative;
+}
+.service-cards {
+  margin: 4rem auto 2rem auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 2.5rem;
+  max-width: 1200px;
+}
+.service-card {
+  background: linear-gradient(120deg, var(--indigo) 60%, var(--purple) 100%);
+  border: 1.5px solid var(--mauve);
+  border-radius: 1.5rem;
+  padding: 0 0 1.5rem 0;
+  box-shadow: 0 8px 32px rgba(127,127,255,0.10);
+  transition: all 0.3s cubic-bezier(.4,2,.6,1);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+.service-card::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, var(--coral) 0%, transparent 70%);
+  opacity: 0.13;
+  z-index: 0;
+}
+.service-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+  box-shadow: 0 2px 12px rgba(222,151,143,0.13);
+  z-index: 1;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+@media (max-width: 900px) {
+  .service-cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .service-card {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .service-card img {
+    height: 150px;
+  }
+}
+@media (max-width: 600px) {
+  .service-cards {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+  .service-card {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  .service-card img {
+    height: 120px;
+  }
+}
+.service-card-content {
+  padding: 2.2rem 1.5rem 0 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.service-card h4 {
+  font-weight: 700;
+  color: var(--coral);
+  margin-bottom: 0.7rem;
+  font-size: 1.3rem;
+  z-index: 1;
+}
+.service-card p {
+  font-size: 1.08rem;
+  color: #f4f4f4;
+  z-index: 1;
+}
+.service-card:hover {
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 16px 48px rgba(127,127,255,0.22);
+  border-color: var(--rose);
+}
+.services-divider {
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--coral), var(--mauve));
+  margin: 2.5rem auto 3rem auto;
+  border-radius: 2px;
+}
+/* --- WHY CHOOSE US STAIRCASE --- */
+.why-choose {
+  margin: 4rem auto 2rem auto;
+  max-width: 1100px;
+  padding: 0 1rem;
+}
+.why-choose-title {
+  text-align: left;
+  color: var(--coral);
+  font-weight: 900;
+  font-size: 2.5rem;
+  margin-bottom: 2.5rem;
+  letter-spacing: 1px;
+}
+.staircase {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  position: relative;
+}
+.stair-step {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 80px;
+  border-radius: 0 1.5rem 1.5rem 0;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 24px rgba(43,47,108,0.08);
+  position: relative;
+  background: linear-gradient(90deg, var(--indigo) 80%, var(--purple) 100%);
+  color: #fff;
+  padding-left: 2.5rem;
+  padding-right: 2rem;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.stair-step .icon {
+  width: 48px;
+  height: 48px;
+  margin-right: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.stair-step .step-content {
+  display: flex;
+  flex-direction: column;
+}
+.stair-step .headline {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.2rem;
+  color: #fff;
+}
+.stair-step .desc {
+  font-size: 1.05rem;
+  color: #e6e6f6;
+}
+.stair-step:nth-child(1) {
+  background: linear-gradient(90deg, var(--indigo) 80%, var(--purple) 100%);
+}
+.stair-step:nth-child(2) {
+  background: linear-gradient(90deg, #3a4a7c 80%, #6a4e8a 100%);
+}
+.stair-step:nth-child(3) {
+  background: linear-gradient(90deg, #4e5e9c 80%, #9d6c82 100%);
+}
+.stair-step:nth-child(4) {
+  background: linear-gradient(90deg, #5e7ebc 80%, #c17f8b 100%);
+}
+.stair-step:nth-child(5) {
+  background: linear-gradient(90deg, #6e9edc 80%, #de978f 100%);
+}
+@media (max-width: 700px) {
+  .why-choose-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+  }
+  .stair-step {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.2rem 1rem 1.2rem 1.2rem;
+    min-height: 0;
+  }
+  .stair-step .icon {
+    margin-bottom: 0.7rem;
+    margin-right: 0;
+  }
+}
+@media (max-width: 900px) {
+  .service-cards, .feature-boxes {
+    grid-template-columns: 1fr 1fr;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .service-cards, .feature-boxes {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .services-hero h1 { font-size: 2.1rem; }
+}
+</style>
+
+<section class="services-hero">
+  <div class="container">
+    <h1>Our Services</h1>
+    <p>Smarter performance. Stronger future. Predict with confidence.</p>
+  </div>
+</section>
+
+
+
+<style>
+.comparison-section {
+  max-width: 1100px;
+  margin: 3.5rem auto 2.5rem auto;
+  padding: 0 1rem 2.5rem 1rem;
+  background: linear-gradient(120deg, var(--indigo) 0%, var(--purple) 100%);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 40px rgba(43,47,108,0.10);
+  position: relative;
+}
+.comparison-title {
+  font-size: 2.1rem;
+  font-weight: 900;
+  color: var(--coral);
+  text-align: left;
+  margin-bottom: 2.2rem;
+  letter-spacing: 1px;
+  text-shadow: 0 0 18px var(--mauve);
+}
+.comparison-table th.feature-col {
+  background: linear-gradient(90deg, var(--indigo) 0%, var(--purple) 100%);
+  color: #fff;
+}
+.comparison-table-wrapper {
+  overflow-x: auto;
+}
+.comparison-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: transparent;
+  font-size: 1.13rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 16px rgba(86,71,121,0.07);
+  overflow: hidden;
+}
+.comparison-table th, .comparison-table td {
+  padding: 1.2rem 1.1rem;
+  text-align: left;
+  border-bottom: 1px solid #ece6f3;
+}
+.comparison-table th {
+  background: linear-gradient(90deg, var(--indigo) 0%, var(--purple) 100%);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 800;
+  border-top: none;
+  border-bottom: 2px solid var(--rose);
+}
+.comparison-table th.highlight {
+  background: linear-gradient(90deg, var(--coral) 0%, var(--rose) 100%);
+  color: #fff;
+}
+.comparison-table td {
+  color: #fff;
+  font-weight: 500;
+  vertical-align: middle;
+  border-right: 1px solid #f2eaf6;
+}
+.comparison-table td:last-child {
+  border-right: none;
+}
+/* First column: row titles */
+.comparison-table td.row-title {
+  background: linear-gradient(90deg, var(--indigo) 0%, var(--purple) 100%);
+  color: #fff;
+  font-weight: 700;
+  border-left: 4px solid var(--coral);
+  border-radius: 0.7rem 0 0 0.7rem;
+}
+/* Second column: SPP */
+.comparison-table td.highlight {
+  background: linear-gradient(90deg, var(--purple) 0%, var(--mauve) 100%);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(86,71,121,0.07);
+}
+/* Third column: Traditional */
+.comparison-table td:last-child:not(.row-title) {
+  background: linear-gradient(90deg, var(--rose) 0%, var(--coral) 100%);
+  color: #fff;
+}
+.comparison-table tr:last-child td {
+  border-bottom: none;
+}
+@media (max-width: 700px) {
+  .comparison-title { font-size: 1.3rem; margin-bottom: 1.1rem; }
+  .comparison-table th, .comparison-table td { padding: 0.7rem 0.5rem; font-size: 0.98rem; }
+}
+</style>
+<div class="container service-cards">
+  <div class="service-card">
+    <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=400&q=80" alt="Student Collaboration">
+    <div class="service-card-content">
+      <h4>Collaborative Learning</h4>
+      <p>Engage in group projects and peer learning with real-time feedback and shared progress dashboards.</p>
+    </div>
+  </div>
+  <div class="service-card">
+    <img src="{{ url_for('static', filename='analytics.jpg') }}" alt="Data Analytics">
+    <div class="service-card-content">
+      <h4>Advanced Analytics</h4>
+      <p>Visualize your academic journey with beautiful, interactive charts and personalized insights.</p>
+    </div>
+  </div>
+  <div class="service-card">
+    <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=400&q=80" alt="Goal Setting">
+    <div class="service-card-content">
+      <h4>Goal Setting & Tracking</h4>
+      <p>Set, track, and achieve your academic goals with step-by-step recommendations and milestone celebrations.</p>
+    </div>
+  </div>
+</div>
+<div class="services-divider"></div>
+
+
+<!-- WHY CHOOSE US STAIRCASE SECTION (graphic, vertical, like reference image) -->
+<section class="why-choose-staircase-graphic">
+  <div class="why-choose-staircase-graphic-title">WHY CHOOSE US</div>
+  <div class="staircase-graphic-vertical">
+    <div class="stair-block-vertical stair1">
+      <div class="stair-icon-vertical"><img src="https://cdn-icons-png.flaticon.com/512/2910/2910791.png" alt="Analytics"/></div>
+      <div class="stair-text-vertical">
+        <div class="stair-headline-vertical">Data-Driven Insights</div>
+        <div class="stair-desc-vertical">Our platform analyzes your academic journey and provides actionable, personalized feedback.</div>
+      </div>
+    </div>
+    <div class="stair-block-vertical stair2">
+      <div class="stair-icon-vertical"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="User"/></div>
+      <div class="stair-text-vertical">
+        <div class="stair-headline-vertical">Personalized Guidance</div>
+        <div class="stair-desc-vertical">Every student receives tailored recommendations and support for their unique journey.</div>
+      </div>
+    </div>
+    <div class="stair-block-vertical stair3">
+      <div class="stair-icon-vertical"><img src="https://cdn-icons-png.flaticon.com/512/753/753345.png" alt="Growth"/></div>
+      <div class="stair-text-vertical">
+        <div class="stair-headline-vertical">Celebrate Growth</div>
+        <div class="stair-desc-vertical">We help you set, track, and achieve your academic goals—every milestone matters.</div>
+      </div>
+    </div>
+    <div class="stair-block-vertical stair4">
+      <div class="stair-icon-vertical"><img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" alt="Support"/></div>
+      <div class="stair-text-vertical">
+        <div class="stair-headline-vertical">Continuous Support</div>
+        <div class="stair-desc-vertical">Get help from both AI and real educators, whenever you need it.</div>
+      </div>
+    </div>
+    <div class="stair-block-vertical stair5">
+      <div class="stair-icon-vertical"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" alt="Trophy"/></div>
+      <div class="stair-text-vertical">
+        <div class="stair-headline-vertical">Proven Results</div>
+        <div class="stair-desc-vertical">Thousands of students have improved their performance using our research-backed predictions.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE: Student Performance Predictor vs. Traditional Methods -->
+<section class="comparison-section">
+  <div class="comparison-title">How We Compare</div>
+  <div class="comparison-table-wrapper">
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th class="feature-col">Feature</th>
+          <th class="highlight">Student Performance Predictor</th>
+          <th>Traditional Methods</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="row-title">Personalization</td>
+          <td class="highlight">AI-driven, tailored to each student’s unique journey</td>
+          <td>One-size-fits-all, generic feedback</td>
+        </tr>
+        <tr>
+          <td class="row-title">Insights</td>
+          <td class="highlight">Real-time, actionable analytics & visualizations</td>
+          <td>Static, limited progress reports</td>
+        </tr>
+        <tr>
+          <td class="row-title">Support</td>
+          <td class="highlight">24/7 AI + human educator support</td>
+          <td>Office hours, slow response</td>
+        </tr>
+        <tr>
+          <td class="row-title">Goal Tracking</td>
+          <td class="highlight">Milestone-based, interactive, and motivating</td>
+          <td>Manual, often overlooked</td>
+        </tr>
+        <tr>
+          <td class="row-title">Results</td>
+          <td class="highlight">Proven, research-backed improvement</td>
+          <td>Unmeasured, anecdotal</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+.why-choose-staircase-graphic {
+  max-width: 1100px;
+  margin: 3.5rem auto 2.5rem auto;
+  padding: 0 1rem;
+  position:relative;
+  
+}
+.why-choose-staircase-graphic-title {
+  text-align: left;
+  color: var(--coral);
+  font-weight: 900;
+  font-size: 2.3rem;
+  margin-bottom: 2.2rem;
+  letter-spacing: 1px;
+}
+.staircase-graphic-vertical {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  position: relative;
+  min-height: 420px;
+  width: 80vw;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.stair-block-vertical {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  min-height: 70px;
+  max-width: 1200px;
+  border-radius: 1.2rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0;
+  box-shadow: 0 4px 24px rgba(43,47,108,0.10);
+  position: relative;
+  z-index: 1;
+  padding: 0.7rem 2.2rem 0.7rem 2.2rem;
+  color: #fff;
+  border-left: 10px solid var(--coral);
+  background: var(--stair-gradient-vertical);
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+.stair-block-vertical .stair-icon-vertical {
+  width: 48px;
+  height: 48px;
+  margin-right: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.10);
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(86,71,121,0.10);
+  padding: 0.5rem;
+}
+.stair-block-vertical .stair-icon-vertical img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(43,47,108,0.10));
+}
+.stair-block-vertical .stair-text-vertical {
+  display: flex;
+  flex-direction: column;
+}
+.stair-block-vertical .stair-headline-vertical {
+  font-weight: 700;
+  font-size: 1.18rem;
+  margin-bottom: 0.18rem;
+  color: #fff;
+}
+.stair-block-vertical .stair-desc-vertical {
+  font-size: 1.04rem;
+  color: #e6e6f6;
+}
+/* Slightly lighter, but still prominent gradients using the color palette */
+.stair1 { background: linear-gradient(90deg, color-mix(in srgb, var(--indigo) 85%, #fff 15%) 70%, color-mix(in srgb, var(--purple) 85%, #fff 15%) 100%); --stair-gradient-vertical: linear-gradient(90deg, color-mix(in srgb, var(--indigo) 85%, #fff 15%) 70%, color-mix(in srgb, var(--purple) 85%, #fff 15%) 100%); z-index: 5; }
+.stair2 { background: linear-gradient(90deg, color-mix(in srgb, var(--purple) 85%, #fff 15%) 70%, color-mix(in srgb, var(--mauve) 85%, #fff 15%) 100%); --stair-gradient-vertical: linear-gradient(90deg, color-mix(in srgb, var(--purple) 85%, #fff 15%) 70%, color-mix(in srgb, var(--mauve) 85%, #fff 15%) 100%); z-index: 4; }
+.stair3 { background: linear-gradient(90deg, color-mix(in srgb, var(--mauve) 85%, #fff 15%) 70%, color-mix(in srgb, var(--rose) 85%, #fff 15%) 100%); --stair-gradient-vertical: linear-gradient(90deg, color-mix(in srgb, var(--mauve) 85%, #fff 15%) 70%, color-mix(in srgb, var(--rose) 85%, #fff 15%) 100%); z-index: 3; }
+.stair4 { background: linear-gradient(90deg, color-mix(in srgb, var(--rose) 85%, #fff 15%) 70%, color-mix(in srgb, var(--coral) 85%, #fff 15%) 100%); --stair-gradient-vertical: linear-gradient(90deg, color-mix(in srgb, var(--rose) 85%, #fff 15%) 70%, color-mix(in srgb, var(--coral) 85%, #fff 15%) 100%); z-index: 2; }
+.stair5 { background: linear-gradient(90deg, color-mix(in srgb, var(--coral) 85%, #fff 15%) 70%, #fff 100%); --stair-gradient-vertical: linear-gradient(90deg, color-mix(in srgb, var(--coral) 85%, #fff 15%) 70%, #fff 100%); z-index: 1; }
+/* Arrow removed for a cleaner, modern look */
+@media (max-width: 900px) {
+  .staircase-graphic-vertical { min-height: 0; }
+  .stair-block-vertical { min-width: 0; max-width: 100%; width: 100%; }
+  .stair-arrow-vertical { left: 40%; }
+}
+@media (max-width: 600px) {
+  .why-choose-staircase-graphic-title { font-size: 1.1rem; margin-bottom: 1.1rem; }
+  .stair-block-vertical { font-size: 0.95rem; padding: 0.7rem 0.7rem; }
+  .arrow-label-vertical { font-size: 0.9rem; }
+  .stair-arrow-vertical { left: 10%; }
+}
+</style>
+{% endblock %}
