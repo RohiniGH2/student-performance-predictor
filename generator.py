@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import random
 
-n = 500  # number of entries
+n = 500  # this is the no.of entries
 
 # Value pools
 genders = ['M', 'F']
@@ -27,7 +27,7 @@ data = {
     'Participation in extracurricular activities': np.random.choice(extracurricular, n),
 }
 
-# Final Grade (basic model using weighted sum + noise)
+# Final Grade 
 grade = (
     data['Previous GPA'] * 20 +
     np.array(data['Study time per week']) * 1.5 +
@@ -40,7 +40,7 @@ grade = (
 )
 data['Final grade (out of 100)'] = np.round(grade.clip(0, 100), 1)
 
-# Save to CSV
+# We save to CSV
 df = pd.DataFrame(data)
 df.to_csv('dataset.csv', index=False)
 

@@ -1156,14 +1156,14 @@ body {
           }
         </script>
         {% endif %}
-        <!-- No chat response shown; handled by dialog pop-up on submit -->
+        
       </section>
     </div>
   </div>
-<!-- Dialog Modal for Thank You Message -->
+
 
 </div>
-<!-- Chart.js for bar, radar, gauge, and sparkline charts -->
+<!-- We can use Chart.js for bar, radar, gauge, and other charts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 const userScore = parseFloat("{{ prediction|float }}");
@@ -1191,7 +1191,7 @@ new Chart(ctx, {
   }
 });
 
-// Radar chart: Simulated breakdown (replace with real data if available)
+// Radar chart: Simulated breakdown
 const radar = document.getElementById('radarChart').getContext('2d');
 const radarLabels = ['Attendance', 'Motivation', 'Study Time', 'Health', 'Support', 'Discipline'];
 const radarData = [
@@ -1218,7 +1218,7 @@ new Chart(radar, {
   },
   options: {
     responsive: false,
-    layout: { padding: 30 }, // Add padding to keep labels inside
+    layout: { padding: 30 }, 
     plugins: { legend: { display: false } },
     scales: {
       r: {
@@ -1226,8 +1226,8 @@ new Chart(radar, {
         grid: { color: '#45A29E33' },
         pointLabels: {
           color: '#66FCF1',
-          font: { size: 17, weight: 'bold' }, // Reduce font size for better fit
-          padding: 8 // Add extra padding to pull labels inwards
+          font: { size: 17, weight: 'bold' }, 
+          padding: 8 
         },
         min: 0,
         max: 100,
@@ -1237,7 +1237,7 @@ new Chart(radar, {
   }
 });
 
-// Gauge chart: Out-of-the-box style for predicted grade (now inside score-col, above)
+// Gauge chart: Simulated score gauge
 const gauge = document.getElementById('gaugeChart').getContext('2d');
 const gaugeValue = userScore;
 const gaugeChart = new Chart(gauge, {
@@ -1281,7 +1281,7 @@ const gaugeChart = new Chart(gauge, {
   }]
 });
 
-// Sparkline chart: Simulated performance trend
+// Simulated performance trend
 const spark = document.getElementById('sparklineChart').getContext('2d');
 const trend = [
   Math.max(40, userScore - 15),
@@ -1314,8 +1314,8 @@ new Chart(spark, {
   }
 });
 
-// PIE CHARTS SECTION
-// 1. Factor Contribution Pie Chart (colorful palette)
+// Pie Charts Section
+// 1. Factor Contribution
 const factorPie = document.getElementById('factorPieChart').getContext('2d');
 new Chart(factorPie, {
   type: 'pie',
@@ -1338,10 +1338,10 @@ new Chart(factorPie, {
   }
 });
 
-// 2. Time Allocation Pie Chart (colorful palette)
+// 2. Time Allocation
 const timePie = document.getElementById('timePieChart').getContext('2d');
 const timeLabels = ['Study', 'Sleep', 'Extracurriculars', 'Social', 'Other'];
-const timeData = [28, 56, 14, 10, 10]; // hours per week (example)
+const timeData = [28, 56, 14, 10, 10]; // hours per week
 new Chart(timePie, {
   type: 'pie',
   data: {
@@ -1363,7 +1363,7 @@ new Chart(timePie, {
   }
 });
 
-// 3. Numeric Class Score Distribution Pie Chart (bins)
+// 3. Numeric Class Score Distribution ( or bins)
 const scoreDistPie = document.getElementById('scoreDistPieChart').getContext('2d');
 const scoreDistLabels = ['90-100', '80-89', '70-79', '60-69', '0-59'];
 const scoreDistData = [7, 13, 15, 8, 3]; // example bin counts
@@ -1388,7 +1388,7 @@ new Chart(scoreDistPie, {
   }
 });
 
-// 4. Predicted Grade vs. Target/Goal Pie Chart (colorful)
+// 4. Predicted Grade vs. Target
 const goalPie = document.getElementById('goalPieChart').getContext('2d');
 const goalTarget = 100;
 const goalData = [userScore, Math.max(0, goalTarget - userScore)];
